@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from json import *
 
@@ -34,7 +35,7 @@ canvas_wrap = "<div class='tips-wrap'>\
 
 
 def add_canvas(name):
-    return "<canvas id=" + name + " width=23920 height=300px></canvas>"
+    return "<canvas id=" + name + " width=1920 height=300px></canvas>"
 
 
 def add_div(content, class_name="", style=""):
@@ -202,7 +203,9 @@ def canvas():
 			            ' + "\n" + 'var myNewChart = new Chart(ctx).Bar(node_data);')
         c.write(add_script(script_node))
 
-        c.write(add_div(add_div("最终盈利", "") +
+        c.write(add_div(add_div("销售数量", "") +
+                        add_div("", "chart-line", "background-color: rgba(96,8,254,1)") +
+                        add_div("最终盈利", "") +
                         add_div("", "chart-line", "background-color: rgba(239,75,75,1)") +
                         add_div("单件商品利润率：") +
                         add_div("", "chart-line", "background-color: rgba(139,175,75,1)"), "tips-wrap"))
@@ -216,6 +219,12 @@ def canvas():
 						            strokeColor: "rgba(239, 75, 75,1)",\
                                     pointColor : "rgba(239, 75, 75,1)",\
 						            data:' + str(tree_total_profit) + '\
+					            },\
+					            {\
+						            fillColor : "rgba(96, 8, 254,0)",\
+						            strokeColor: "rgba(96, 8, 254,1)",\
+                                    pointColor : "rgba(96, 8, 254,1)",\
+						            data:' + str([i / tree_sell_price[0] for i in tree_sell_price]) + '\
 					            },\
 					            {\
 						            fillColor : "rgba(139, 175, 75,0)",\
