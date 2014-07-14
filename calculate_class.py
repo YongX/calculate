@@ -82,63 +82,63 @@ class Node(object):
         self._deep = int(deep)
         return True
 
-    def set_sumsubval(self, val):
-        self._sumsubval += int(val)
+    def set_sumsubval(self, sell_num):
+        self._sumsubval += int(sell_num)
         return True
 
-    def set_totalval(self, val):
-        self._totalval = val
+    def set_totalval(self, sell_num):
+        self._totalval = sell_num
         # 计算总值的时候将其的收益也计算出来
-        self.set_income(val)
-        self.set_discount(val)
+        self.set_income(sell_num)
+        self.set_discount(sell_num)
         self.set_discount_money()
         return True
 
-    def set_income(self, val):
-        # val 的值按年记，_income的值也按年记
-        if val < 1000:
+    def set_income(self, sell_num):
+        # sell_num 的值按年记，_income的值也按年记
+        if sell_num < 1000:
             self._income = 0
-        elif 1000 <= val < 6000:
+        elif 1000 <= sell_num < 6000:
             self._income = 1 * 365
-        elif 6000 <= val < 16000:
+        elif 6000 <= sell_num < 16000:
             self._income = 2 * 365
-        elif 16000 <= val < 36000:
+        elif 16000 <= sell_num < 36000:
             self._income = 4 * 365
-        elif 36000 <= val < 76000:
+        elif 36000 <= sell_num < 76000:
             self._income = 8 * 365
-        elif 76000 <= val < 156000:
+        elif 76000 <= sell_num < 156000:
             self._income = 16 * 365
-        elif 156000 <= val < 316000:
+        elif 156000 <= sell_num < 316000:
             self._income = 32 * 365
-        elif 316000 <= val < 636000:
+        elif 316000 <= sell_num < 636000:
             self._income = 64 * 365
-        elif 636000 <= val < 1276000:
+        elif 636000 <= sell_num < 1276000:
             self._income = 128 * 365
-        elif 1276000 <= val:
+        elif 1276000 <= sell_num:
             self._income = 256 * 365
         return True
 
-    def set_discount(self, val):
-        # val 的值按年记，_discount的值也按年记
-        if val < 1000:
+    def set_discount(self, sell_num):
+        # sell_num 的值按年记，_discount的值也按年记
+        if sell_num < 1000:
             self._discount = 0
-        elif 1000 <= val < 6000:
+        elif 1000 <= sell_num < 6000:
             self._discount = 0.9
-        elif 6000 <= val < 16000:
+        elif 6000 <= sell_num < 16000:
             self._discount = 0.85
-        elif 16000 <= val < 36000:
+        elif 16000 <= sell_num < 36000:
             self._discount = 0.8
-        elif 36000 <= val < 76000:
+        elif 36000 <= sell_num < 76000:
             self._discount = 0.75
-        elif 76000 <= val < 156000:
+        elif 76000 <= sell_num < 156000:
             self._discount = 0.7
-        elif 156000 <= val < 316000:
+        elif 156000 <= sell_num < 316000:
             self._discount = 0.65
-        elif 316000 <= val < 636000:
+        elif 316000 <= sell_num < 636000:
             self._discount = 0.6
-        elif 636000 <= val < 1276000:
+        elif 636000 <= sell_num < 1276000:
             self._discount = 0.55
-        elif 1276000 <= val:
+        elif 1276000 <= sell_num:
             self._discount = 0.5
         return True
 
@@ -250,6 +250,50 @@ class Tree:
     def get_total_income(self):
         return self._total_income
 
+    # 返回树的每一层第一个节点的信息。
+    def get_each_node_info(self):
+        node_deep = []
+        nodes_queue = []
+        nodes_deep = []
+        temp_deep = 0
+        count = 0
+        last_node = self._nodequeue[-1]
+        for node in self._nodequeue:
+            cur_deep = node.get_deep()
+            if temp_deep == cur_deep:
+                count += 1
+                cur_node = node
+                if node == last_node:
+                    nodes = {}
+                    nodes['deep'] = temp_deep
+                    nodes['sell_num'] = cur_node.get_sell_num()
+                    nodes['price'] = cur_node.get_price()
+                    nodes['income'] = cur_node.get_income()
+                    nodes['discount'] = cur_node.get_discount_money()
+                    nodes['total'] = cur_node.get_totalval()
+                    nodes['sub_val'] = cur_node.get_sumsubval()
+                    nodes['count'] = count
+                    nodes_queue.append(nodes)
+                    nodes_deep.append(temp_deep)
+            else:
+            # node_deep.append(cur_deep)
+            # if cur_deep not in nodes_deep:
+                nodes = {}
+                nodes['deep'] = temp_deep
+                nodes['sell_num'] = cur_node.get_sell_num()
+                nodes['price'] = cur_node.get_price()
+                nodes['income'] = cur_node.get_income()
+                nodes['discount'] = cur_node.get_discount_money()
+                nodes['total'] = cur_node.get_totalval()
+                nodes['sub_val'] = cur_node.get_sumsubval()
+                nodes['count'] = count
+                nodes_queue.append(nodes)
+                nodes_deep.append(temp_deep)
+                temp_deep = cur_deep
+                count = 1
+        return nodes_queue
+
+
     # 生成节点
     @staticmethod
     def generate_node(sell_num, name, price):
@@ -264,7 +308,7 @@ class Tree:
               3 表示degree和sell_num都随机
         """
         # 根据是否设置单价商品利率来调整子节点的值（商品售价）
-        price += self._ratio / 100 * price
+        price += round(self._ratio / 100 * price, 2)
         #print("price: %d" % price)
         if stat == 1:
             return (range(random.randint(0, deg)), sell_num, price)
@@ -331,30 +375,39 @@ class Tree:
         return (self._tree_discount, self._tree_goods_total_price)
 
 
-def make_tree(deep, deg, val, price=0, ratio=0, mode=0):
+def make_tree(deep, deg, sell_num, price=0, ratio=0, mode=0):
     """
-    usage: make_tree(deep, deg, val[, price][, mode])
+    usage: make_tree(deep, deg, sell_num[, price][, mode])
 
     mode:   0 表示不处理degree和sell_num
             1 表示随机degree，不随机sell_num
             2 表示随机sell_num，不随机degree
             3 表示degree和sell_num都随机
             4 表示不处理degree，穷举sell_num
+            5 表示不处理degree，根据sell_num和price进行穷举
 
     sample: make_tree(4, 3, 10, 60, 2)
     """
     if mode == 4:
         # 穷举sell_num,新建一个生成树的队列用于多线程
         tree_queue = []
-        for i in range(1, val + 1):
+        for i in range(1, sell_num + 1):
             tree = Tree(deep, deg, i, price, ratio, 0)
             tree_queue.append(tree)
 
         # 调用线程处理
         multi_thread(tree_queue)
-        # calculate_tree(tree, 1)
+    elif mode == 5:
+        # 根据sell_num和price进行组合穷举
+        tree_queue = []
+        for i in range(1, sell_num + 1):
+            for j in range(10, ratio + 1, 10):
+                tree = Tree(deep, deg, i, price, j, 0)
+                tree_queue.append(tree)
+
+        multi_thread(tree_queue)
     else:
-        tree = Tree(deep, deg, val, price, ratio, mode)
+        tree = Tree(deep, deg, sell_num, price, ratio, mode)
         calculate_tree(tree)
         write_to_file(tree, 1)
 
@@ -392,6 +445,8 @@ def write_to_file(tree, file_num):
             root_total['tree_sell_price'] = tree.get_sell_price()
             # 当前单件商品利润率
             root_total['tree_goods_ratio'] = tree.get_ratio()
+            # 树的每一层节点的信息
+            root_total['tree_each_deep_infos'] = tree.get_each_node_info()
 
             print(tree.get_root().get_totalval())
 

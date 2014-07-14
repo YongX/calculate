@@ -16,7 +16,7 @@ def calculate(*args):
     if mode == "" or deep == "" or degree == "" or value == "" or price == "" or ratio == "":
         messagebox.showinfo(message='不要留空')
         return
-    if 0 <= mode <= 4:
+    if 0 <= mode <= 5:
         messagebox.showinfo(message='注意：计算完成会在2秒后打开浏览器')
         cc.start(deep, degree, value, price, ratio, mode)
     else:
@@ -41,7 +41,7 @@ def center_window(w=300, h=200):
 
 root = Tk()
 root.title("代理分销模型")
-center_window(500, 300)
+center_window(800, 300)
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -84,15 +84,17 @@ ttk.Label(mainframe, text="%（输入整数）").grid(column=3, row=6, sticky=W)
 ttk.Button(mainframe, text="开始计算", command=calculate).grid(column=3, row=3, sticky=W)
 ttk.Button(mainframe, text="清除文件", command=delete).grid(column=3, row=4, sticky=W)
 
-ttk.Label(mainframe, text="(4号模式建议先清除文件)").grid(column=3, row=1, sticky=W)
+ttk.Label(mainframe, text="(4，5号模式建议先清除文件)").grid(column=3, row=1, sticky=W)
 ttk.Label(mainframe, text="模式的值介绍：").grid(column=4, row=1, sticky=W)
-ttk.Label(mainframe, text="0 表示不处理degree和value").grid(column=4, row=2, sticky=W)
-ttk.Label(mainframe, text="1 表示随机degree，不随机value").grid(column=4, row=3, sticky=W)
-ttk.Label(mainframe, text="2 表示随机value，不随机degree").grid(column=4, row=4, sticky=W)
-ttk.Label(mainframe, text="3 表示degree和value都随机").grid(column=4, row=5, sticky=W)
-ttk.Label(mainframe, text="4 表示不处理degree，穷举value").grid(column=4, row=6, sticky=W)
+ttk.Label(mainframe, text="0 表示不处理度和卖出数量").grid(column=4, row=2, sticky=W)
+ttk.Label(mainframe, text="1 表示随机度，不随机卖出数量").grid(column=4, row=3, sticky=W)
+ttk.Label(mainframe, text="2 表示随机卖出数量，不随机度").grid(column=4, row=4, sticky=W)
+ttk.Label(mainframe, text="3 表示度和卖出数量都随机").grid(column=4, row=5, sticky=W)
+ttk.Label(mainframe, text="4 表示不处理度，穷举卖出数量").grid(column=4, row=6, sticky=W)
+ttk.Label(mainframe, text="5 表示不处理度，穷举卖出数量，并对每一个卖出数量穷举利润，利润步长为10").grid(column=4, row=7, sticky=W)
 
-for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
+for child in mainframe.winfo_children():
+    child.grid_configure(padx=5, pady=5)
 mode_entry.focus()
 root.bind('<Return>', calculate)
 
