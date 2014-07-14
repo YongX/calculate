@@ -103,19 +103,19 @@ class Node(object):
         elif 6000 <= sell_num < 16000:
             self._income = 2 * 365
         elif 16000 <= sell_num < 36000:
-            self._income = 4 * 365
+            self._income = 3 * 365
         elif 36000 <= sell_num < 76000:
-            self._income = 8 * 365
+            self._income = 5 * 365
         elif 76000 <= sell_num < 156000:
-            self._income = 16 * 365
+            self._income = 8 * 365
         elif 156000 <= sell_num < 316000:
-            self._income = 32 * 365
+            self._income = 13 * 365
         elif 316000 <= sell_num < 636000:
-            self._income = 64 * 365
+            self._income = 21 * 365
         elif 636000 <= sell_num < 1276000:
-            self._income = 128 * 365
+            self._income = 34 * 365
         elif 1276000 <= sell_num:
-            self._income = 256 * 365
+            self._income = 55 * 365
         return True
 
     def set_discount(self, sell_num):

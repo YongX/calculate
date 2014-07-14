@@ -34,7 +34,7 @@ canvas_wrap = "<div class='tips-wrap'>\
 
 
 def add_canvas(name):
-    return "<canvas id=" + name + " width=20920 height=400px></canvas>"
+    return "<canvas id=" + name + " width=23920 height=300px></canvas>"
 
 
 def add_div(content, class_name="", style=""):
@@ -81,7 +81,7 @@ def canvas():
         # 商品单价
         tree_sell_price = []
         # 单件商品利润率
-        tree_goods_ratio = 0
+        tree_goods_ratio = []
         # 每层的总的节点信息
         tree_each_deep_infos = []
 
@@ -96,7 +96,7 @@ def canvas():
             tree_final_goods_price.append(line['tree_final_goods_price'])
             tree_node_num.append(line['tree_node_num'])
             tree_total_profit.append(line['tree_total_profit'])
-            tree_goods_ratio = line['tree_goods_ratio']  # 可以改进
+            tree_goods_ratio.append(line['tree_goods_ratio'])  # 可以改进
             tree_each_deep_infos.append(line['tree_each_deep_infos'])
 
         # 每层节点的深度
@@ -169,7 +169,8 @@ def canvas():
                         add_div("", "chart-line", "background-color: rgba(96,8,254,1)") +
                         add_div("最终盈利", "") +
                         add_div("", "chart-line", "background-color: rgba(239,75,75,1)") +
-                        add_div("单件商品利润率：" + str(tree_goods_ratio) + "%", ""), "tips-wrap"))
+                        add_div("单件商品利润率：") +
+                        add_div("", "chart-line", "background-color: rgba(139, 175, 75,1)"), "tips-wrap"))
 
         c.write(add_canvas("chart_node"))
         script_node = ("\n" + 'var node_data = {\
@@ -189,6 +190,11 @@ def canvas():
 						            fillColor : "rgba(239, 75, 75,1)",\
 						            strokeColor: "rgba(239, 75, 75,1)",\
 						            data:' + str(tree_total_profit) + '\
+					            },\
+					            {\
+						            fillColor : "rgba(139, 175, 75,1)",\
+						            strokeColor: "rgba(139, 175, 75,1)",\
+						            data:' + str(tree_goods_ratio) + '\
 					            }\
 				            ]\
 			            }\
@@ -198,7 +204,8 @@ def canvas():
 
         c.write(add_div(add_div("最终盈利", "") +
                         add_div("", "chart-line", "background-color: rgba(239,75,75,1)") +
-                        add_div("单件商品利润率：" + str(tree_goods_ratio) + "%", ""), "tips-wrap"))
+                        add_div("单件商品利润率：") +
+                        add_div("", "chart-line", "background-color: rgba(139,175,75,1)"), "tips-wrap"))
 
         c.write(add_canvas("chart_profile"))
         script_profile = ("\n" + 'var profile_data = {\
@@ -209,6 +216,12 @@ def canvas():
 						            strokeColor: "rgba(239, 75, 75,1)",\
                                     pointColor : "rgba(239, 75, 75,1)",\
 						            data:' + str(tree_total_profit) + '\
+					            },\
+					            {\
+						            fillColor : "rgba(139, 175, 75,0)",\
+						            strokeColor: "rgba(139, 175, 75,1)",\
+                                    pointColor : "rgba(139, 175, 75,1)",\
+						            data:' + str(tree_goods_ratio) + '\
 					            }\
 				            ]\
 			            }\
