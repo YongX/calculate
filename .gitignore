@@ -2,3 +2,6 @@
 *.html
 *.txt
 __pycache__
+
+# pycharm
+.idea
