@@ -35,7 +35,7 @@ canvas_wrap = "<div class='tips-wrap'>\
 
 
 def add_canvas(name):
-    return "<canvas id=" + name + " width=1920 height=300px></canvas>"
+    return "<canvas id=" + name + " width=2920 height=300px></canvas>"
 
 
 def add_div(content, class_name="", style=""):
@@ -102,17 +102,17 @@ def canvas():
 
         # 每层节点的深度
         node_deep = []
-        # 每层节点的深度
+        # 每层节点的销售数量
         node_sell_num = []
-        # 每层节点的深度
+        # 每层节点的销售单价
         node_price = []
-        # 每层节点的深度
+        # 每层节点的薪资
         node_income = []
-        # 每层节点的深度
+        # 每层节点的折扣金额
         node_discount = []
-        # 每层节点的深度
+        # 每层节点的总收入
         node_total = []
-        # 每层节点的深度
+        # 每层节点的子经销商总收入
         node_sub_val = []
         # 每层节点的数目
         node_count = []
@@ -245,6 +245,8 @@ def canvas():
                         add_div("", "chart-line", "background-color: rgba(239,75,75,1)") +
                         add_div("劳保薪资", "") +
                         add_div("", "chart-line", "background-color: rgba(81,180,67,1)") +
+                        add_div("折扣金额", "") +
+                        add_div("", "chart-line", "background-color: rgba(181,180,67,1)") +
                         add_div("总销售", "") +
                         add_div("", "chart-line", "background-color: rgba(60,100,100,1)") +
                         add_div("子销售", "") +
@@ -270,6 +272,11 @@ def canvas():
 						            fillColor : "rgba(81,180,67,1)",\
 						            strokeColor: "rgba(81,180,67,1)",\
 						            data:' + str(node_income) + '\
+					            },\
+					            {\
+						            fillColor : "rgba(181,180,67,1)",\
+						            strokeColor: "rgba(181,180,67,1)",\
+						            data:' + str(node_discount) + '\
 					            },\
 					            {\
 						            fillColor : "rgba(60,100,100,1)",\

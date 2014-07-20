@@ -96,51 +96,51 @@ class Node(object):
         self.set_discount_money()
         return True
 
-    def set_income(self, sell_num):
-        # sell_num 的值按年记，_income的值也按年记
-        if sell_num < 1000:
+    def set_income(self, total):
+        # total 的值按年记，_income的值也按年记
+        if total < 1000:
             self._income = 0
-        elif 1000 <= sell_num < 6000:
-            self._income = 0.8 * 365
-        elif 6000 <= sell_num < 16000:
-            self._income = 1.5 * 365
-        elif 16000 <= sell_num < 36000:
+        elif 1000 <= total < 6000:
+            self._income = 0.3 * 365
+        elif 6000 <= total < 16000:
+            self._income = 1.0 * 365
+        elif 16000 <= total < 36000:
             self._income = 2 * 365
-        elif 36000 <= sell_num < 76000:
-            self._income = 3 * 365
-        elif 76000 <= sell_num < 156000:
+        elif 36000 <= total < 76000:
             self._income = 4 * 365
-        elif 156000 <= sell_num < 316000:
-            self._income = 8 * 365
-        elif 316000 <= sell_num < 636000:
-            self._income = 11 * 365
-        elif 636000 <= sell_num < 1276000:
-            self._income = 17 * 365
-        elif 1276000 <= sell_num:
-            self._income = 25 * 365
+        elif 76000 <= total < 156000:
+            self._income = (0.00005*total) * 365
+        elif 156000 <= total < 316000:
+            self._income = (0.000065*total) * 365
+        elif 316000 <= total < 636000:
+            self._income = (0.00008*total) * 365
+        elif 636000 <= total < 1276000:
+            self._income = (0.0001*total) * 365
+        elif 1276000 <= total:
+            self._income = (0.00013*total) * 365
         return True
 
-    def set_discount(self, sell_num):
-        # sell_num 的值按年记，_discount的值也按年记
-        if sell_num < 1000:
+    def set_discount(self, total):
+        # total 的值按年记，_discount的值也按年记
+        if total < 1000:
             self._discount = 0
-        elif 1000 <= sell_num < 6000:
+        elif 1000 <= total < 6000:
             self._discount = 0.9
-        elif 6000 <= sell_num < 16000:
+        elif 6000 <= total < 16000:
             self._discount = 0.85
-        elif 16000 <= sell_num < 36000:
+        elif 16000 <= total < 36000:
             self._discount = 0.8
-        elif 36000 <= sell_num < 76000:
+        elif 36000 <= total < 76000:
             self._discount = 0.75
-        elif 76000 <= sell_num < 156000:
+        elif 76000 <= total < 156000:
             self._discount = 0.7
-        elif 156000 <= sell_num < 316000:
+        elif 156000 <= total < 316000:
             self._discount = 0.65
-        elif 316000 <= sell_num < 636000:
+        elif 316000 <= total < 636000:
             self._discount = 0.6
-        elif 636000 <= sell_num < 1276000:
+        elif 636000 <= total < 1276000:
             self._discount = 0.55
-        elif 1276000 <= sell_num:
+        elif 1276000 <= total:
             self._discount = 0.5
         return True
 
