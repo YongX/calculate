@@ -116,6 +116,8 @@ def canvas():
         node_sub_val = []
         # 每层节点的数目
         node_count = []
+        # 每层节点的折扣利润
+        node_discount_profit = []
         for infos in tree_each_deep_infos:
             for info in infos:
                 node_deep.append(info['deep'])
@@ -126,6 +128,7 @@ def canvas():
                 node_total.append(info['total'])
                 node_sub_val.append(info['sub_val'])
                 node_count.append(info['count'])
+                node_discount_profit.append(info['discount_profit'])
 
     with open("chart.html", "w+", encoding="utf-8") as c:
         c.write(add_header_str_begin())
@@ -247,6 +250,8 @@ def canvas():
                         add_div("", "chart-line", "background-color: rgba(81,180,67,1)") +
                         add_div("折扣金额", "") +
                         add_div("", "chart-line", "background-color: rgba(181,180,67,1)") +
+                        add_div("折扣差价利润", "") +
+                        add_div("", "chart-line", "background-color: rgba(101,180,67,1)") +
                         add_div("总销售", "") +
                         add_div("", "chart-line", "background-color: rgba(60,100,100,1)") +
                         add_div("子销售", "") +
@@ -277,6 +282,11 @@ def canvas():
 						            fillColor : "rgba(181,180,67,1)",\
 						            strokeColor: "rgba(181,180,67,1)",\
 						            data:' + str(node_discount) + '\
+					            },\
+					            {\
+						            fillColor : "rgba(101,180,67,1)",\
+						            strokeColor: "rgba(101,180,67,1)",\
+						            data:' + str(node_discount_profit) + '\
 					            },\
 					            {\
 						            fillColor : "rgba(60,100,100,1)",\

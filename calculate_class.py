@@ -17,8 +17,10 @@ class Node(object):
     _name: 节点名
     _children: 节点的孩子节点
     _deep: 节点的深度（根节点深度为0）
-    _sumsubval: 节点的所有子节点值的和
-    _totalval: 节点的总值（_sumsubval+_sell_num*_price）
+    _sum_subval: 节点的所有子节点值的和
+    _total_val: 节点的总值（_sumsubval+_sell_num*_price）
+    _sum_discount_profit: 节点的所有子节点的利润总值的和
+    _sum_discount_money: 节点的差价利润总值（_sum_discount_profit + _total_discount）
     _income: 该节点的薪资（收入）
     _discount: 该节点的折扣
     _price: 货源价格
@@ -32,8 +34,10 @@ class Node(object):
         self._name = name
         self._children = []
         self._deep = 0
-        self._sumsubval = 0
-        self._totalval = 0
+        self._sum_subval = 0
+        self._total_val = 0
+        self._sum_discount_profit = 0
+        self._sum_discount_money = 0
         self._income = 0
         self._discount = 0
         self._price = int(price)
@@ -54,13 +58,19 @@ class Node(object):
         return int(self._deep)
 
     def get_sumsubval(self):
-        return int(self._sumsubval)
+        return int(self._sum_subval)
 
     def get_parent(self):
         return self._parent
 
     def get_totalval(self):
-        return int(self._totalval)
+        return int(self._total_val)
+
+    def get_sum_discount_val(self):
+        return float(self._discount_money * self._sell_num)
+
+    def get_total_discount(self):
+        return float(self._discount_money * self._sell_num)
 
     def get_income(self):
         return float(self._income)
@@ -77,6 +87,9 @@ class Node(object):
         else:
             return 0
 
+    def get_sum_sub_discount_profit(self):
+        return self._sum_discount_profit
+
     def get_price(self):
         return int(self._price)
 
@@ -85,16 +98,19 @@ class Node(object):
         return True
 
     def set_sumsubval(self, sell_num):
-        self._sumsubval += int(sell_num)
+        self._sum_subval += int(sell_num)
         return True
 
     def set_totalval(self, sell_num):
-        self._totalval = sell_num
+        self._total_val = sell_num
         # 计算总值的时候将其的收益也计算出来
         self.set_income(sell_num)
         self.set_discount(sell_num)
         self.set_discount_money()
         return True
+
+    def set_sum_sub_discount(self, discount_profit):
+        self._sum_discount_profit += float(discount_profit)
 
     def set_income(self, total):
         # total 的值按年记，_income的值也按年记
@@ -272,6 +288,7 @@ class Tree:
                     nodes['price'] = cur_node.get_price()
                     nodes['income'] = cur_node.get_income()
                     nodes['discount'] = cur_node.get_discount_money()
+                    nodes['discount_profit'] = cur_node.get_sum_sub_discount_profit()
                     nodes['total'] = cur_node.get_totalval()
                     nodes['sub_val'] = cur_node.get_sumsubval()
                     nodes['count'] = count
@@ -286,6 +303,7 @@ class Tree:
                 nodes['price'] = cur_node.get_price()
                 nodes['income'] = cur_node.get_income()
                 nodes['discount'] = cur_node.get_discount_money()
+                nodes['discount_profit'] = cur_node.get_sum_sub_discount_profit()
                 nodes['total'] = cur_node.get_totalval()
                 nodes['sub_val'] = cur_node.get_sumsubval()
                 nodes['count'] = count
@@ -334,6 +352,7 @@ class Tree:
                   , '薪资=' + str(node.get_income())
                   , '折扣=' + str(node.get_discount_money())
                   , '商品单价=' + str(node.get_price())
+                  , '差价利润=' + str(node.get_sum_sub_discount_profit())
                   , file=file)
             for i in node.get_children():
                 self.print_node(i, file=file)
@@ -346,6 +365,7 @@ class Tree:
                   , '薪资=' + str(node.get_income())
                   , '折扣=' + str(node.get_discount_money())
                   , '商品单价=' + str(node.get_price())
+                  , '差价利润=' + str(node.get_sum_sub_discount_profit())
                   , file=file, end="</li>\n")
 
     # 根据node_queue的值计算父节点的值
@@ -368,6 +388,20 @@ class Tree:
             if parent:
                 # 设置父节点的子节点值的和
                 parent.set_sumsubval(total_val)
+        self.set_node_discount_profit()
+
+    def set_node_discount_profit(self):
+        for i in self._nodequeue[::-1]:
+            parent = i.get_parent()
+            if parent:
+                #if i.get_children():
+                #    i.set_sum_sub_discount(parent.get_discount_money() - i.get_discount_money())
+                # 设置父节点的差价利润的和
+                # print("parent: ", parent.get_discount_money())
+                print("parent: ", parent.get_sum_sub_discount_profit(), end=" ")
+                print("parent: ", parent.get_name())
+                # print("child: ", i.get_discount_money())
+                parent.set_sum_sub_discount(parent.get_discount_money() - i.get_discount_money() + i.get_sum_sub_discount_profit())
 
     # 获得整个树的折扣总额，和商品按照原价时的总额
     def get_tree_discount(self):
@@ -563,12 +597,13 @@ if __name__ == "__main__":
         else:
             exit()
     else:
-        make_tree(4, 2, 10, 100, 10, mode)
+        # make_tree(4, 10, 10, 100, 30, mode)
+        make_tree(4, 10, 10, 100, 30, mode)
     # make_tree(4, 10, 100, 60, 4)
     get_final_result()
 
     # 生成图标。生成的文件名为chart.html
     # 注意：如果想要查看单次的图表生成记录，需要把result.txt文件先删除。否则每次生成的记录会累加进result.txt文件
     template.canvas()
-    time.sleep(2)
+    #time.sleep(2)
     os.startfile("chart.html")
